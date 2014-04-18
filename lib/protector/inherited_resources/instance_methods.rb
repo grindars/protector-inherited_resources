@@ -10,16 +10,16 @@ module Protector::InheritedResources
 
     def end_of_association_chain_with_protector
       resource = end_of_association_chain_without_protector
-      
+
       subject = self.class.effective_protector_subject
-      
+
       if subject.kind_of? Symbol
         subject = send subject
       elsif subject
         subject = instance_exec &subject
       end
 
-      if subject && resource.respond_to?(:restrict!)
+      if subject != false && resource.respond_to?(:restrict!)
         resource.restrict! subject
       else
         resource

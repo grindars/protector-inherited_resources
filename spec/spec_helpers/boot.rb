@@ -1,6 +1,8 @@
 require 'rspec'
 require 'combustion'
 
+Combustion.initialize! :active_record, :action_controller
+
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
@@ -20,8 +22,6 @@ RSpec.configure do |config|
     Dummy.find(1).destroy
   end
 end
-
-Combustion.initialize! :active_record, :action_controller
 
 require 'rspec/rails'
 require 'rspec/autorun'
