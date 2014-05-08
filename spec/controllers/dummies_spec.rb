@@ -23,4 +23,30 @@ describe DummiesController do
     assigns(:dummy).protector_subject?.should be_true
     assigns(:dummy).protector_subject.should == 'default_user'
   end
+
+  it 'implements create' do
+    post :create, dummy: { value: 'foo' }
+    assigns(:dummy).protector_subject?.should be_true
+    assigns(:dummy).protector_subject.should == 'default_user'
+    assigns(:dummy).persisted?.should be_true
+    assigns(:dummy).value.should == 'foo'
+  end
+
+  it 'implements update' do
+    Dummy.find(1).update_attributes value: 'before_update'
+
+    post :update, id: 1, dummy: { value: 'after_update' }
+    assigns(:dummy).protector_subject?.should be_true
+    assigns(:dummy).protector_subject.should == 'default_user'
+
+    Dummy.find(1).value.should == 'after_update'
+  end
+
+  it 'implements destroy' do
+    dummy = Dummy.create!
+    post :destroy, id: dummy.id
+    assigns(:dummy).protector_subject?.should be_true
+    assigns(:dummy).protector_subject.should == 'default_user'
+    expect { dummy.reload }.to raise_error(ActiveRecord::RecordNotFound)
+  end
 end
